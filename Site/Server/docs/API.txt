@@ -1,0 +1,26 @@
+
+API
+
+* Clean database 
+> http://localhost:8080/NoSe/rest/data/clean?device=sensor&type=temperature
+This service will remove all metrics for a given device and type.
+If device or type or both are not specified, all devices or types will be removed
+i.e. to clean ALL database!!!
+> http://localhost:8080/NoSe/rest/data/clean
+
+* Import data
+> http://localhost:8080/NoSe/rest/data/import?date=100&device=pippo&type=temperature&status=0&value=13.2
+This service will add a metric measurement for a given device and type.
+Status should be always 0 for new entered metrics.
+Date is expressed in milliseconds from 1970 (standard java date time).
+
+* Export data
+> http://localhost:8080/NoSe/rest/data/export?from=0&to=1328832000&device=pippo&type=temperature
+Will export all data for a given device/type pair, in given time interval
+Time is expressed in milliseconds from 1970 (standard java date time).
+
+* Get single metric
+> http://localhost:8080/NoSe/rest/data/get?id=4f351f9a4b40b0e427ee2aab
+With this service you can return the metric identified by that id
+
+

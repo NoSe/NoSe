@@ -1,0 +1,23 @@
+
+ERROR
+
+- Verifica perchè l'export non funziona
+ 
+---------------------------------------------
+TODO
+---------------------------------------------
+
+
+* Aggiungi controllo eccezioni e parmaetri a tutte le servlet
+* Aggiungi e stabilisci valori di ritorno delle servlet
+
+---------------------------------------------
+DONE
+---------------------------------------------
+
+10/01/2012
+
+* Utility per il riempimento di dati per un sensore e per un tipo di dato.
+* Servlet di inserimento dati mongo
+  
+

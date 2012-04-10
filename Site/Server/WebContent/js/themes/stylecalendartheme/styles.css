@@ -1,0 +1,9 @@
+@import url("../reindeer/styles.css");
+
+.red  div {
+	background-color: #E61E6E;
+}
+
+.green div {
+	background-color: #40B527;
+}

@@ -1,0 +1,2 @@
+# Module it.nose.widgetset.NoseWidgetset
+# RPC service class, partial path of RPC policy file

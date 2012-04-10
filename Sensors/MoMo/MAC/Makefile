@@ -1,0 +1,7 @@
+COMPONENT=MoMoMACC
+
+CFLAGS += -I$(TOSDIR)/../MoMo/interfaces/
+CFLAGS += -I$(TOSDIR)/../MoMo/Application/
+CFLAGS += -I$(TOSDIR)/../MoMo/MAC/
+CFLAGS += -DLOW_POWER_LISTENING
+include $(MAKERULES)

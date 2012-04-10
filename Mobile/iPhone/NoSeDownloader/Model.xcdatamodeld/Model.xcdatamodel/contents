@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model name="" userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="872" systemVersion="10K549" minimumToolsVersion="Automatic" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Packet" syncable="YES">
+        <attribute name="data" attributeType="String" indexed="YES" syncable="YES"/>
+        <attribute name="time" attributeType="Date" indexed="YES" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Packet" positionX="160" positionY="192" width="128" height="75"/>
+    </elements>
+</model>

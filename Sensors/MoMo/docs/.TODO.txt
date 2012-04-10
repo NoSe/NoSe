@@ -1,0 +1,60 @@
+- preparare presentazione
+- trasmettere sleep time anziche' lpl value e poi fare conversione di quello che ricevo
+- controllare che venga rispettata la sequenza degli ID quando passo a fare le medie
+- implementare la rimozione di un nodo, cioe' dopo un po' di tentativi falliti nel contattarlo, il sink smette di farlo e lo segnala
+
+PER FINIRE E TESTARE(con JAMES solo sul sink)
+
+- controllare sul tavolo che il meccanismo per raggiungere i nodi in PER_MODE funzioni poi fare test con questa features al TP
+- nel readme mettere che quando programmo i nodi devo mettere un offset pari a quanti nodi ho nella rete (IMPORTANTE - se no cambiare come il codice usato al TP o rivedere il modo di gestire la lista dei nodi joined nel mac, in caso escludere l'id del sink)
+- ripristinato nel MAC il tipo di pacchetto anche per contesa terminata con successo - TO CHECK
+- finire di implementare la gestione del force_awake dopo aver sistemato il dutycyclecontrol (FATTO il DCC - FATTO anche il  FA - to check)
+- comandi al sink tramite java e interfaccia della demo
+- james sul sink
+- TO CHECK - GESTIONE ARRAY A LIVELLO MAC (MAX NUM NEIGH) e costanti che ho tolto dall'enum
+
+--- MIGLIORAMENTI e CONTROLLI
+
+- controllare se voglio indirizzare i nodi con il seriale o con l'indirizzo di rete come faccio ora (in caso usare la funzione che converte per i comandi chiamati dal sink) (FATTO)
+- vedere se serve mettere un messaggio che segnali la fine dei pacchetti inviati da un nodo cosi' da programmarlo, nel caso di PERIODIC mode (TO CHECK)
+- se mando medie non memorizzo in flash - TO CHECK
+- il jitter con il DeferTimer si puo' mettere anche per il primo pacchetto dati - TO CHECK
+- capire se servono code sul sink per i comandi ricevuti da seriale - TO CHECK
+- se aggiungo un nodo in piu' di quelli previsti (come vicini del sink) il nodo fallisce sempre la procedura di join - TO CHECK
+- prevedere il fatto che non memorizzo ma mando solo un campione (rimettere il discorso della media, FATTO)
+- finire di implementare l'interfaccia LogConfiguration (FATTO)
+- CAPIRE perche' sminchia gli ID in flash e come faccio a mettere piu' lunghi i TIMER evitando l'OF (RISOLTO MA USARE I DUE SAMPLE CON L'AGGIUNTA DI ID E TS QUANDO SWITCHA TRA I DUE - FATTO)
+
+
+- settare da messaggio il timer di collezionamento e di campionamento, memorizzare e mandare, poi questa la testo al TP con james solo sul sink che fa flush dei pacchetti ricevuti (FATTO)
+- mettere jitter per il sendJoin() (FATTO)
+- mettere nella flash un ID del campione, il campione e il time stamp, poi trasferire solo il tempo trascorso (l'age del pacchetto) (FATTO - MA PER FARLO MEGLIO SAREBBE DA AGGIORNARE IL PACCHETTO QUANDO ESCE DAL NODO COME IL TTL)
+
+- mettere buffer per per scrivere/leggere flash e farlo alla JAMES durante i periodi di sleep? (miglioramenti successivi)
+- fare una struttura con tutte le info dei comandi e copiarla per ogni pacchetto ctrl ricevuto -> il timer lo faccio partire ogni volta
+
+- quando il sink manda un ack, se deve comunicare con il nodo che e' in periodic mode, mette ad 1 un flag, che se riceve il quale il nodo alla fine della contesa non rilascia la risorsa radio, ma aspetta on per un po', dopo di che' termina normalmente la contesa -> nell'applicazione si ha una lista dei nodi a cui si vuole mandare un comando (nella parte sink) e c'e' un comando per renderlo accesibile dal MAC cosi' lo metto nell'ACK) (FATTO - AGGIUNGERE NEL MAC LO STATO DI FORCE AWAKE)
+- vedere se integrare il RadioControl nel DutyCycleControl e scrivere un arbitrer (sulla base del tutorial e di Iris) per l'accesso alla radio da parte del MAC layer e dell'Application layer (FATTO VERIFICARE) -> l'integrazione va fatta e il livello sotto deve avere solo i comandi per far partire e terminare la contesa
+
+- aggiungere nel pacchetto control il valore di lpl (e mettere un pacchetto per il watchdog - per ora non lo uso) (FATTO)
+- estendere il RadioControl per fermare l'LPL (gia' fatto) e far partire un duty dato dal periodo - bastano i comandi di start e stop della radio come in CsmaC - questi devono essere disponibili a livello applicativo - il mac se l'LPL e' fermo deve saperlo - nella modalita' non RT e' il sink che quando arriva l'ultimo dato deve passare sotto il messaggio da mandare unicast (nelle stesse modalita' che usa il MAC) e sopra aspetto un po' prima di spegnere - mettere un numero d'ordine nei pacchetti? (FATTO - CONTROLLARE)
+
+- aggiungere ack implicito -> se non ricevo ack da un nodo al mio ctrl ma ricevo dati allora considero come ack implicito
+- controllare il LL nel caso di ricezione di nuovi pacchetti da passare sopra (FATTO - OK)
+
+
+
+- togliere i timer per gli stati e mettere un solo timer e un case a seconda degli stati (FATTO - TO CHECK)
+
+- capire perche' il sink non riceve i pacchetti quando sta mandando e se cosi' capire da dove vengono gli ACK (messi gli ack SW) (FATTO)
+
+
+- il sink conta il numero di vicini che ha raggiunto e smette dopo un certo numero di tentativi che uno non risponde e manda un messaggio di allarme che quel nodo non sta funzionando (MIGLIORAMENTO FACILE IN CASO METTERE)
+- mettere una versione al messaggio di controllo che viene verificata dall'applicazione e se uguale non viene aggiornato (FATTO - MANCA il CONTROLLO)
+- manca l'assegnazione dell'indirizzo e la scelta del canale (MIGLIORAMENTO FACILE IN CASO METTERE)
+
+
+MULTI-HOP EXTENSION
+
+- il LL deve gestire la priorita' dei diversi pacchetti -> quelli di allarme vengono inseriti in testa (da dove prendo) -> da sopra la send e la receive sono particolari a seconda del pacchetto cosi' posso distinguere visto che l'applicazione conosce i pacchetti -> il mac non dovrebbe conoscere il tipo di pacchetto quindi le send e le receive dovrebbero essere generiche -> serve solo per cambiare il valore del CS che devo comunque comunicare sotto in qualche modo (in caso metto poi un METADATA)
+- nel LL prevedo il Multi-hop che poi faccio come si discuteva con TLP

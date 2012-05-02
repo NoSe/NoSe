@@ -27,9 +27,9 @@ public class MetricDB extends AbstractMongoDB {
 	
 	private static MetricDB instance;
 	
-	private static String dbName = "org.nose.db";
+	private static String dbName = "nose";
 
-	private static String dbCollection = "org.nose.collection";
+	private static String dbCollection = "metrics";
 	
 	public static MetricDB instance() {
 		if ( instance == null )

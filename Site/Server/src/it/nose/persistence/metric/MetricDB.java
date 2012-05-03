@@ -4,6 +4,7 @@ import it.nose.persistence.AbstractMongoDB;
 import it.nose.persistence.PersistenceException;
 import it.nose.persistence.metric.model.Metric;
 import it.nose.persistence.metric.model.MetricSerie;
+import it.nose.persistence.metric.model.Status;
 import it.nose.persistence.metric.utility.Transformer;
 
 import java.util.HashSet;
@@ -116,8 +117,12 @@ public class MetricDB extends AbstractMongoDB {
 		query.put("_id", id);
 		DBCollection collection = getCollection();
 		DBObject object = collection.findOne();
-		object.put("status", status);
-		collection.save(object);
+		
+		if ( Status.acceptedValue(status) ) {
+			object.put("status", status);
+			collection.save(object);
+		}
+		
 		return object;
 	}
 	

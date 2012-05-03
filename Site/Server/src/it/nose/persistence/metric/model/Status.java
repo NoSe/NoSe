@@ -11,5 +11,15 @@ public class Status implements Serializable {
 	public static final int VALID = 1;
 	
 	public static final int NOT_VALID = -1;
+	
+	public static boolean acceptedValue(int value) {
+		if ( value == TO_VALIDATE )
+			return true;
+		if ( value == VALID )
+			return true;
+		if ( value == NOT_VALID )
+			return true;
+		return false;
+	}
 				
 };

@@ -98,7 +98,7 @@ public class Metric implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Metric [date=" + date + ", device=" + device + ", type=" + type
+		return "Metric [id=" + id + ", date=" + date + ", device=" + device + ", type=" + type
 				+ ", status=" + status + ", value=" + value + "]";
 	}
 

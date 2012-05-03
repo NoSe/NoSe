@@ -1,0 +1,20 @@
+		<!-- <repository> <id>morphia.googlecode.com</id> <name>Morphia Repo at 
+			Google Code</name> <url>http://morphia.googlecode.com/svn/mavenrepo</url> 
+			</repository> -->
+
+			<!-- <repository> <id>morphia.googlecode.com</id> <name>Morphia Repo at 
+			Google Code</name> <url>http://morphia.googlecode.com/svn/mavenrepo</url> 
+			</repository> -->
+			
+					<dependency>
+			<groupId>com.google.code.morphia</groupId>
+			<artifactId>morphia</artifactId>
+			<version>0.93-SNAPSHOT</version>
+		</dependency>
+			
+					<repository> 
+			<id>morphia.googlecode.com</id> 
+			<name>Morphia Repo at Google Code</name>
+			<url>http://morphia.googlecode.com/svn/mavenrepo</url> 
+		</repository>
+			

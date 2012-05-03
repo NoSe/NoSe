@@ -40,8 +40,8 @@ public class MongoInsertFakeData {
 		String measureType = "metrics";
 		
 		// Clean all (fake data)
-		// MetricDB.instance().dropDataOfDevice(null, null);
-		// MongoService.instance().dropDataOfDevice(deviceToken, measureType);
+		MetricDB.instance().dropDataOfDevice(null, null);
+		// MetricDB.instance().dropDataOfDevice(deviceToken, measureType);
 		
 		// Last date found
 		DBObject object = MetricDB.instance().getLastMetric(deviceToken, measureType);
@@ -95,8 +95,9 @@ public class MongoInsertFakeData {
 		MetricSerie serie = MetricSerieDB.instance().getMetricSerie(device, type, true);
 		System.out.println("Metric serie: " + serie);
 		
-		Date nextDate = DateUtility.getHourDate(DateUtility.getNextHour(from));
-		
+		// Date nextDate = DateUtility.getHourDate(DateUtility.getNextHour(from));
+		Date nextDate = DateUtility.getHourDate(DateUtility.getNextDay(from));
+
 		while ( nextDate.getTime() < new Date().getTime() ) {
 			
 			Metric metric = new Metric(nextDate, 
@@ -115,7 +116,8 @@ public class MongoInsertFakeData {
 			
 			System.out.println("Inserted: " + object);
 			
-			nextDate = DateUtility.getHourDate(DateUtility.getNextHour(nextDate));
+			// nextDate = DateUtility.getHourDate(DateUtility.getNextHour(nextDate));
+			nextDate = DateUtility.getHourDate(DateUtility.getNextDay(nextDate));
 		}
 		
 	}

@@ -11,9 +11,9 @@ public class AuthDB extends AbstractMongoDB {
 	
 	private static AuthDB instance;
 	
-	private static String dbName = "org.nose.db";
+	private static String dbName = "nose";
 
-	private static String dbCollection = "org.nose.auth";
+	private static String dbCollection = "auth";
 
 	public static AuthDB instance() {
 		if ( instance == null )

@@ -1,0 +1,19 @@
+
+<dwr>
+	<allow>
+
+		<create creator="new" javascript="JDate">
+			<param name="class" value="java.util.Date" />
+		</create>
+
+		<create creator="new" javascript="DWRMetrics">
+			<param name="class" value="it.nose.dwr.DWRMetrics" />
+		</create>
+
+		<!--
+		<create creator="new" javascript="Demo">
+			<param name="class" value="your.java.Bean" />
+		</create>
+		-->
+	</allow>
+</dwr>

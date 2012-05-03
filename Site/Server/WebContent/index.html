@@ -16,6 +16,9 @@
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
 	<script src="http://jquery-ui.googlecode.com/svn/tags/latest/external/jquery.bgiframe-2.1.2.js" type="text/javascript"></script>
 	<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/i18n/jquery-ui-i18n.min.js" type="text/javascript"></script>
+
+	<script type='text/javascript' src='/NoSe/dwr/interface/DWRMetrics.js'></script>
+  	<script type='text/javascript' src='/NoSe/dwr/engine.js'></script>
 			
  </head>
     <body>
@@ -87,7 +90,9 @@ var previousPoint = null;
 
 // Main dataset
 var d = generateData();
+
 var dataApproved;
+
 var serieApproved;
 
 function markAs(type) {
@@ -103,6 +108,16 @@ function markAs(type) {
     	var value = selectedPoints[key];
     	var datapoint = d[value['index']];
     	datapoint[2] = type;
+    	var id = dump(datapoint);
+    	
+    	alert(value['index'] + " - " + type + " - " + id);
+    	    	
+    	DWRMetrics.markMetric(id, type, {
+			async: false,
+			callback: function() {
+				alert("done: " + type + " - " + id);				
+			}
+    	});
     }
     
     selectedPoints = [];
@@ -112,18 +127,41 @@ function markAs(type) {
 }
 
 function markApproved() {
-	markAs(0);
-}
-
-function markDiscarded() {
 	markAs(1);
 }
 
+function markDiscarded() {
+	markAs(-1);
+}
+
 function markToApprove() {
-	markAs(2);
+	markAs(0);
 }
 
 function generateData() {
+
+	var d = [];
+	
+	var now = new Date();
+	var start = new Date(now.getTime() - 1000 * 60 * 60 * 24 * 30);
+
+	// Load all data
+	DWRMetrics.getMetrics(start.getTime(), now.getTime(), "device", "metrics", {
+		async: false,
+		callback: function(list) {
+			for (var l in list) {
+		    	var date = new Date(list[l].date);
+		    	d.push([ list[l].date, list[l].value, list[l].status, list[l]._id.id ]);
+			}
+		},
+		errorHandler: function(message) {
+			alert("Error: " + message);
+		}
+	});
+
+	return d;
+	
+	/*
 	var d = [];
     var date = new Date(2011, 1, 1, 0, 0, 0, 0);
     var now = new Date();
@@ -138,6 +176,7 @@ function generateData() {
         	value = 500;
     }
     return d;
+	*/
 }
 
 function refreshPlot() {
@@ -200,14 +239,14 @@ function prepareData() {
 
 	for ( var i = 0; i < d.length; i ++ ) {
 		if ( d[i][2] == 1 ) {
-			dataApproved.push([ d[i][0], d[i][1], "circle", "rgb(0, 200, 0)" ]);
+			dataApproved.push([ d[i][0], d[i][1], "circle", "rgb(0, 200, 0)", d[i][3] ]);
 		}
 		if ( d[i][2] == -1 ) {
 			dataApproved.push([ d[i][0], d[i][1], function (ctx, x, y, radius, shadow) {
 	            // pi * r^2 = (2s)^2  =>  s = r * sqrt(pi)/2
 	            var size = radius * Math.sqrt(Math.PI) / 2;
 	            ctx.rect(x - size, y - size, size + size, size + size);
-	        }, "rgb(200, 0, 0)" ]);
+	        }, "rgb(200, 0, 0)" ], d[i][3]);
 		}
 		if ( d[i][2] == 0 ) {
 			dataApproved.push([ d[i][0], d[i][1], function (ctx, x, y, radius, shadow) {
@@ -218,7 +257,7 @@ function prepareData() {
 	            ctx.lineTo(x + size, y);
 	            ctx.lineTo(x, y + size);
 	            ctx.lineTo(x - size, y);
-	        }, "rgb(20, 20, 30)" ]);
+	        }, "rgb(20, 20, 30)", d[i][3] ]);
 		}
 	}
 
@@ -566,7 +605,7 @@ $(function () {
 	notes.push({
 		min: 1198710000000,
 		max: 1202252400000,
-		label: 'First note kasjd lakjdòla jsòdlja òkdjaòs jaòsjòlaskjò laksjdfklajsdk'
+		label: 'First note kasjd lakjdÃ²la jsÃ²dlja Ã²kdjaÃ²s jaÃ²sjÃ²laskjÃ² laksjdfklajsdk'
 	});
 
 	notes.push({
@@ -653,13 +692,13 @@ $(function () {
        		
        		var type = d[item.dataIndex][2];
 
-       		if ( type == 0 ) {
+       		if ( type == 1 ) {
        			type = "APPROVATO";
        		}
-			else if ( type == 1 ) {
+			else if ( type == -1 ) {
        			type = "ELIMINATO";
        		}
-       		else if ( type == 2 ) {
+       		else if ( type == 0 ) {
        			type = "DA APPROVARE";
        		}
 

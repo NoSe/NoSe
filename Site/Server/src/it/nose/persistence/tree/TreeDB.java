@@ -16,9 +16,9 @@ public class TreeDB extends AbstractMongoDB {
 	
 	private static TreeDB instance;
 	
-	private static String dbName = "org.nose.db";
+	private static String dbName = "nose";
 
-	private static String dbCollection = "org.nose.tree";
+	private static String dbCollection = "tree";
 	
 	public static TreeDB instance() {
 		if ( instance == null )

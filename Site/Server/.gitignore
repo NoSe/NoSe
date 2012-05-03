@@ -11,6 +11,7 @@
 ######################
 mongo/mongodb-linux-i686-2.0.1/
 mongo/database
+target
 
 # Packages #
 ############

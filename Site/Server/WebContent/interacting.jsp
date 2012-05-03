@@ -49,8 +49,8 @@ $(function () {
 
 <%
 	Mongo mongo = new Mongo();
-	DB db = mongo.getDB( "mydb" );
-	DBCollection collection = db.getCollection("testCollection");
+	DB db = mongo.getDB( "nose" );
+	DBCollection collection = db.getCollection("metrics");
 	DBObject query = new BasicDBObject("date", new BasicDBObject("$gt", new Date(new Date().getTime() - 10000)));
 	DBCursor curs = collection.find(); // query);
 	int i = 0;
@@ -60,7 +60,7 @@ $(function () {
 		data.push([<%=i++%>, <%=object.get("value")%>]);
 <%	
 	}
-	mongo.close();
+	// mongo.close();
 %>
 
     var plot = $.plot($("#placeholder"),
@@ -71,8 +71,8 @@ $(function () {
                },
                grid: { hoverable: true, clickable: true },
 
-               xaxis: { zoomRange: [0.1, 10], panRange: [-10, 10] },
-               yaxis: { zoomRange: [0.1, 10], panRange: [-10, 10] },
+               xaxis: { zoomRange: [0.1, 100], panRange: [0, 100] },
+               yaxis: { zoomRange: [0.1, 100], panRange: [0, 100] },
                
                // xaxis: { zoomRange: [-1, 20], panRange: [-10, 10] },
                // yaxis: { zoomRange: [0.1, 10], panRange: [-10, 10] },

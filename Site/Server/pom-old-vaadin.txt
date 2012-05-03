@@ -1,0 +1,83 @@
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<vaadin.version>6.7.1</vaadin.version>
+		<gwt.version>2.3.0</gwt.version>
+		<gwt.plugin.version>2.2.0</gwt.plugin.version>
+	</properties>
+
+
+		<!-- Vaadin repository -->
+		<!--
+		<repository>
+			<id>vaadin-snapshots</id>
+			<url>http://oss.sonatype.org/content/repositories/vaadin-snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>vaadin-addons</id>
+			<url>http://maven.vaadin.com/vaadin-addons</url>
+		</repository>
+		-->
+
+
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>contextmenu</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>invient-charts</artifactId>
+			<version>0.8.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.vaadin</groupId>
+			<artifactId>vaadin</artifactId>
+			<version>${vaadin.version}</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.google.code.morphia</groupId>
+			<artifactId>morphia</artifactId>
+			<version>0.93-SNAPSHOT</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>com.thoughtworks.proxytoys</groupId>
+			<artifactId>proxytoys</artifactId>
+			<version>1.0</version>
+			<type>jar</type>
+			<optional>true</optional>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.vaadin.vol</groupId>
+			<artifactId>openlayers-wrapper</artifactId>
+			<version>0.9.3</version>
+		</dependency>
+
+				<!-- Optional Jars (for certain features) but required by maven for bulding. -->
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
+			<version>[2.1_3,)</version>
+			<type>jar</type>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.vaadin.addons</groupId>
+			<artifactId>stylecalendar</artifactId>
+			<version>0.6</version>
+		</dependency>
+	
+			<!-- <dependency> <groupId>org.vaadin.addons</groupId> <artifactId>googlemapwidget</artifactId> 
+			<version>0.9.13</version> </dependency> -->
+		

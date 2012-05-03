@@ -46,4 +46,11 @@ public class DateUtility {
 		return calendar.getTime();
 	}
 
+	public static Date getNextDay(Date date) {
+		GregorianCalendar calendar = new GregorianCalendar();
+		calendar.setTime(date);
+		calendar.add(GregorianCalendar.DAY_OF_YEAR, 1);
+		return calendar.getTime();
+	}
+
 }

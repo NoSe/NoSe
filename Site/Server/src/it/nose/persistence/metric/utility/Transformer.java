@@ -21,6 +21,7 @@ public class Transformer {
 		return object;
 	}
 	
+	@SuppressWarnings("unchecked")
 	public static MetricSerie transformDBObjectInMetricSerie(DBObject object) {
 		
 		if ( object == null )

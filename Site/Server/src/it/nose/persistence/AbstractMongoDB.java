@@ -4,11 +4,12 @@ import java.net.UnknownHostException;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
+import com.mongodb.DBAddress;
 import com.mongodb.DBCollection;
 import com.mongodb.Mongo;
 import com.mongodb.MongoException;
 
-public abstract class AbstractMongoDB {
+public class AbstractMongoDB {
 
 	private static Mongo mongo;
 	
@@ -17,18 +18,32 @@ public abstract class AbstractMongoDB {
 	private String dbCollection;
 
 	public AbstractMongoDB(String dbName, String dbCollection) {
+		this(null, dbName, dbCollection);
+	}
+
+	public AbstractMongoDB(DBAddress address, String dbName, String dbCollection) {
 		try {
 			if ( mongo == null ) {
-				mongo = new Mongo();
+				if ( address == null )
+					mongo = new Mongo();
+				else
+					mongo = new Mongo(address);
 			}
 			this.dbName = dbName;
 			this.dbCollection = dbCollection;
-			System.out.println("Mongo connection: open");
+			// System.out.println("Mongo connection: open");
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		} catch (MongoException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void dropDB() {
+		DB db = mongo.getDB( dbName );
+		if ( db == null )
+			return;
+		mongo.dropDatabase(dbName);
 	}
 
 	public DBCollection getCollection() throws PersistenceException {

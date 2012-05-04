@@ -11,11 +11,17 @@ import java.util.List;
 import com.mongodb.DBObject;
 
 public class DWRMetrics {
+	
+	private MetricDB metrics;
+	
+	public DWRMetrics() {
+		this.metrics = new MetricDB();
+	}
 
 	public List<Metric> getMetrics(long from, long to, String device, String type) {
 		
 		try {
-			List<DBObject> list = MetricDB.instance().getMetricsInDateInterval(from, to, "device", "metrics").toArray();
+			List<DBObject> list = metrics.getMetricsInDateInterval(from, to, "device", "metrics").toArray();
 			List<Metric> ret = new ArrayList<Metric>(list.size());
 			for ( DBObject object : list) {
 				ret.add(Transformer.transformDBObjectInMetric(object));
@@ -30,7 +36,7 @@ public class DWRMetrics {
 	
 	public void markMetric(String id, int status) {
 		try {
-			MetricDB.instance().setStatus(id, status);
+			metrics.setStatus(id, status);
 		} catch (PersistenceException e) {
 			e.printStackTrace();
 		}

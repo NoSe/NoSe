@@ -9,20 +9,16 @@ import com.mongodb.DBObject;
 
 public class AuthDB extends AbstractMongoDB {
 	
-	private static AuthDB instance;
-	
 	private static String dbName = "nose";
 
 	private static String dbCollection = "auth";
 
-	public static AuthDB instance() {
-		if ( instance == null )
-			instance = new AuthDB();
-		return instance;
+	public AuthDB() {
+		this("");
 	}
-	
-	private AuthDB() {
-		super(dbName, dbCollection);
+
+	public AuthDB(String prefix) {
+		super(prefix + dbName, dbCollection);
 	}
 
 	public boolean isAuthorized(String username, String password) throws PersistenceException {

@@ -1,0 +1,7 @@
+
+COMPONENT=TunnelMoteAppC
+
+PFLAGS+=-DTOSH_DATA_LENGTH=46
+
+include $(MAKERULES)
+

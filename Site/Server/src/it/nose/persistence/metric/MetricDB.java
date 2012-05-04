@@ -26,22 +26,18 @@ import com.mongodb.util.Pair;
  */
 public class MetricDB extends AbstractMongoDB {
 	
-	private static MetricDB instance;
-	
 	private static String dbName = "nose";
 
 	private static String dbCollection = "metrics";
-	
-	public static MetricDB instance() {
-		if ( instance == null )
-			instance = new MetricDB();
-		return instance;
+		
+	public MetricDB() {
+		this("");
 	}
-	
-	private MetricDB() {
-		super(dbName, dbCollection);
+
+	public MetricDB(String prefix) {
+		super(prefix + dbName, dbCollection);
 	}
-			
+
 	public void dropDataOfDevice(String device, String type) throws PersistenceException {
 		BasicDBObject query = new BasicDBObject();
 		if ( device != null )

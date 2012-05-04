@@ -1,14 +1,14 @@
 package it.nose.persistence.metric;
 
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 import it.nose.persistence.AbstractMongoDB;
 import it.nose.persistence.PersistenceException;
 import it.nose.persistence.metric.model.MetricSerie;
 import it.nose.persistence.metric.utility.Transformer;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCursor;
@@ -18,20 +18,19 @@ import com.mongodb.util.Pair;
 
 public class MetricSerieDB extends AbstractMongoDB {
 	
-	private static MetricSerieDB instance;
-	
 	private static String dbName = "nose";
 
 	private static String dbCollection = "series";
 	
-	public static MetricSerieDB instance() {
-		if ( instance == null )
-			instance = new MetricSerieDB();
-		return instance;
+	private MetricDB metrics;
+
+	public MetricSerieDB(String prefix) {
+		super(prefix + dbName, dbCollection);
+		metrics = new MetricDB();
 	}
-	
-	private MetricSerieDB() {
-		super(dbName, dbCollection);
+
+	public MetricSerieDB() {
+		this("");
 	}
 	
 	/**
@@ -101,7 +100,7 @@ public class MetricSerieDB extends AbstractMongoDB {
 	}
 
 	public void synchronizeAllMetricSeries() throws PersistenceException {
-		Set<Pair<String, String>> series = MetricDB.instance().getAllDeviceAndType();
+		Set<Pair<String, String>> series = metrics.getAllDeviceAndType();
 		for ( Pair<String, String> serie : series ) {
 			getMetricSerie(serie.first, serie.second, true);
 		}

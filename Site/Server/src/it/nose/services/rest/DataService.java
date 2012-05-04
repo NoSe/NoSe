@@ -20,7 +20,13 @@ import com.mongodb.DBObject;
 
 @Path("/data")
 public class DataService {
+
+	private MetricDB metrics;
 	
+	public DataService() {
+		this.metrics = new MetricDB();
+	}
+
 	@GET
 	@Path("/clean")
 	@Produces({ MediaType.TEXT_PLAIN })	
@@ -29,7 +35,7 @@ public class DataService {
 			@QueryParam("type") String type) {
 		
 		try {
-			MetricDB.instance().dropDataOfDevice(null, null);
+			metrics.dropDataOfDevice(null, null);
 		} catch (PersistenceException e) {
 			e.printStackTrace();
 			return "Error: " + e.getMessage();
@@ -59,7 +65,7 @@ public class DataService {
 		DBObject object = null;
 		
 		try {
-			object = MetricDB.instance().insertMetric(metric);
+			object = metrics.insertMetric(metric);
 		} catch (PersistenceException e) {
 			e.printStackTrace();
 		}
@@ -80,7 +86,7 @@ public class DataService {
 		DBCursor cursor = null;
 		
 		try {
-			cursor = MetricDB.instance().getMetricsInDateInterval(from, to, device, type);
+			cursor = metrics.getMetricsInDateInterval(from, to, device, type);
 		} catch (PersistenceException e) {
 			e.printStackTrace();
 			return null;
@@ -108,7 +114,7 @@ public class DataService {
 		DBObject object = null;
 		
 		try {
-			object = MetricDB.instance().getMetric(id);
+			object = metrics.getMetric(id);
 		} catch (PersistenceException e) {
 			e.printStackTrace();
 		}
@@ -127,7 +133,7 @@ public class DataService {
 		DBObject object = null;
 		
 		try {
-			object = MetricDB.instance().setStatus(id, status);
+			object = metrics.setStatus(id, status);
 		} catch (PersistenceException e) {
 			e.printStackTrace();
 		}

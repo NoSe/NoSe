@@ -1,4 +1,4 @@
-package it.nose.test;
+package it.nose.tools;
 
 import it.nose.persistence.PersistenceException;
 import it.nose.persistence.metric.MetricDB;
@@ -11,7 +11,6 @@ import it.nose.persistence.metric.utility.Transformer;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Random;
-
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
@@ -33,18 +32,27 @@ import com.mongodb.MongoException;
  */
 public class MongoInsertFakeData {
 	
+	private MetricDB metrics;
+
+	private MetricSerieDB metricsSerie;
+
 	public static void main(String[] args) throws UnknownHostException, MongoException, PersistenceException {
+		new MongoInsertFakeData();
+	}
 	
-		String deviceToken = "device";
+	public MongoInsertFakeData() throws PersistenceException {
 		
+		this.metrics = new MetricDB();
+		
+		String deviceToken = "device";
 		String measureType = "metrics";
 		
 		// Clean all (fake data)
-		MetricDB.instance().dropDataOfDevice(null, null);
-		// MetricDB.instance().dropDataOfDevice(deviceToken, measureType);
+		metrics.dropDataOfDevice(null, null);
+		// metrics.dropDataOfDevice(deviceToken, measureType);
 		
 		// Last date found
-		DBObject object = MetricDB.instance().getLastMetric(deviceToken, measureType);
+		DBObject object = metrics.getLastMetric(deviceToken, measureType);
 		
 		System.out.println("Last metric found: " + object);
 				
@@ -67,16 +75,16 @@ public class MongoInsertFakeData {
 		dumpAllData(deviceToken, measureType);
 		
 		System.out.println("Metric: '" + deviceToken + "', Type: '" + measureType + "'");
-		System.out.println("First date: " + new Date((Long) MetricDB.instance().getFirstMetric(deviceToken, measureType).get("date")));
-		System.out.println("Last date: " + new Date((Long) MetricDB.instance().getLastMetric(deviceToken, measureType).get("date")));
+		System.out.println("First date: " + new Date((Long) metrics.getFirstMetric(deviceToken, measureType).get("date")));
+		System.out.println("Last date: " + new Date((Long) metrics.getLastMetric(deviceToken, measureType).get("date")));
 				
 	}
 	
-	private static void dumpAllData(String deviceToken, String measureType) throws PersistenceException {
+	private void dumpAllData(String deviceToken, String measureType) throws PersistenceException {
 		
 		System.out.println("------------------ ALL DATA --------------------");
 		
-		DBCollection collection = MetricDB.instance().getCollection();
+		DBCollection collection = metrics.getCollection();
 		
 		BasicDBObject query = new BasicDBObject();
 		query.put("device", deviceToken);
@@ -90,9 +98,10 @@ public class MongoInsertFakeData {
 		
 	}
 	
-	private static void fillUpData(Date from, String device, String type) throws MongoException, PersistenceException {
+	private void fillUpData(Date from, String device, String type) throws MongoException, PersistenceException {
 		
-		MetricSerie serie = MetricSerieDB.instance().getMetricSerie(device, type, true);
+		metricsSerie = new MetricSerieDB();
+		MetricSerie serie = metricsSerie.getMetricSerie(device, type, true);
 		System.out.println("Metric serie: " + serie);
 		
 		// Date nextDate = DateUtility.getHourDate(DateUtility.getNextHour(from));
@@ -108,7 +117,7 @@ public class MongoInsertFakeData {
 			DBObject object = null;
 			
 			try {
-				object = MetricDB.instance().insertMetric(metric);
+				object = metrics.insertMetric(metric);
 			} catch (PersistenceException e) {
 				e.printStackTrace();
 				break;

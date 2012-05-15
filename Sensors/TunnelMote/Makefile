@@ -2,6 +2,11 @@
 COMPONENT=TunnelMoteAppC
 
 PFLAGS+=-DTOSH_DATA_LENGTH=46
+PFLAGS+=-DHELLO_JITTER_S=1
+PFLAGS+=-DMAX_NEIGHBORS_NUM=15
+
+# mig -o CommandMsg.java java TunnelMote.h command_msg -java-classname=CommandMsg
+# mig -o NeighborsMsg.java java TunnelMote.h neighbors_msg -java-classname=NeighborsMsg
 
 include $(MAKERULES)
 

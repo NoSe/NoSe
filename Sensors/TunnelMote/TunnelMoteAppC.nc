@@ -5,33 +5,58 @@ configuration TunnelMoteAppC {
 }
 implementation {
 
-	components LedsC;
 	components MainC;
 	components TunnelMoteC;
-	components new RandomC
+	TunnelMoteC.Boot -> MainC;
+
+	components LedsC;
+	TunnelMoteC.Leds -> LedsC;
+
+	components RandomC;
+	TunnelMoteC.Random -> RandomC;
+
+	components CC2420PacketC;
+	TunnelMoteC.CC2420PacketBody -> CC2420PacketC;
+
+	components CC2420ControlC;
+	TunnelMoteC.CC2420Config -> CC2420ControlC;
 
 	components ActiveMessageC;
-	components new AMSenderC( AM_DISCOVERY_HELLO ) 		as SendHello;
-	components new AMReceiverC( AM_DISCOVERY_HELLO ) 	as ReceiveHello;
-	
-	components CC2420PacketC;
-	components CC2420ControlC;
+	TunnelMoteC.RadioControl -> ActiveMessageC;
+
+	components new AMReceiverC( AM_DISCOVERY_REQUEST ) as ReceiveHelloRequest;
+	TunnelMoteC.ReceiveHelloRequest -> ReceiveHelloRequest;
+
+	components new AMSenderC( AM_DISCOVERY_RESPONSE ) as SendHelloResponse;
+	TunnelMoteC.SendHelloResponse -> SendHelloResponse;
+
+	components new AMSenderC( AM_DISCOVERY_REQUEST ) as SendHelloRequest;
+	TunnelMoteC.SendHelloRequest -> SendHelloRequest;
+
+	components new AMReceiverC( AM_DISCOVERY_RESPONSE ) as ReceiveHelloResponse;
+	TunnelMoteC.ReceiveHelloResponse -> ReceiveHelloResponse;
+
 	components ActiveMessageAddressC as Address;
-	components new TimerMilliC() 				as HelloTimer;
-	
-	TunnelMoteC.Boot					-> MainC;
-	TunnelMoteC.RadioControl				-> ActiveMessageC;
-	TunnelMoteC.HelloTimer            			-> HelloTimer;
-	
-	TunnelMoteC.CC2420PacketBody				-> CC2420PacketC;
-	TunnelMoteC.CC2420Config				-> CC2420ControlC;
-	TunnelMoteC.Leds					-> LedsC;
+	TunnelMoteC.ActiveMessageAddress -> Address;
 
-	TunnelMoteC.SendHello					-> SendHello;
-	TunnelMoteC.ReceiveHello				-> ReceiveHello;
-	TunnelMoteC.SerialAMPacket        			-> SerialActiveMessageC;
+	// Serial connection
+	components SerialActiveMessageC;
+	TunnelMoteC.SerialControl -> SerialActiveMessageC;
+	TunnelMoteC.SerialAMPacket -> SerialActiveMessageC;
 
-	TunnelMoteC.ActiveMessageAddress			-> Address;
-	TunnelMoteC.Random					-> Random;
-		
+	components new SerialAMReceiverC( AM_COMMAND_MSG ) as ReceiveSerial;
+	TunnelMoteC.ReceiveSerial -> ReceiveSerial;
+
+	components new SerialAMSenderC( AM_NEIGHBORS_MSG ) as SendNeighborsSerial;
+	TunnelMoteC.SendNeighborsSerial -> SendNeighborsSerial;
+
+	components new TimerMilliC() as HelloTimer;
+	TunnelMoteC.HelloTimer -> HelloTimer;
+
+	// User button interface
+	// 1 push - send hello request
+	components UserButtonC;
+	TunnelMoteC.Get -> UserButtonC;
+	TunnelMoteC.Notify -> UserButtonC;
+
 }

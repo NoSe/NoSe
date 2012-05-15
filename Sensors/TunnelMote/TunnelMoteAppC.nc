@@ -59,4 +59,7 @@ implementation {
 	TunnelMoteC.Get -> UserButtonC;
 	TunnelMoteC.Notify -> UserButtonC;
 
+	components new SenseAndCacheC(2);
+	TunnelMoteC.SenseAndCache -> SenseAndCacheC;
+
 }

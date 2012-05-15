@@ -30,6 +30,9 @@ module TunnelMoteC {
 		interface Get<button_state_t>;
 		interface Notify<button_state_t>;
 
+		// Sense and cache
+		interface SenseAndCache;
+
 	}
 }
 implementation {
@@ -158,6 +161,7 @@ implementation {
 		return msg;
 	}
 
+	event void SenseAndCache.clearDone(error_t err) {}
 	event void SendNeighborsSerial.sendDone( message_t * msg, error_t result ) {}
 	event void SendHelloRequest.sendDone( message_t * msg, error_t result ) {}
 	event void SerialControl.startDone( error_t result ) {}

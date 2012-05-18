@@ -31,7 +31,7 @@ module TunnelMoteC {
 		interface Notify<button_state_t>;
 
 		// Sense and cache
-		interface SenseAndCache;
+		interface SenseAndCache<uint16_t>;
 
 	}
 }
@@ -88,6 +88,8 @@ implementation {
 	    	call Notify.enable();
 		call RadioControl.start();
 		call SerialControl.start();
+		call SenseAndCache.erase();
+		call Leds.set(7);
 	}
 
 	task void sendHelloResponse() {
@@ -161,7 +163,15 @@ implementation {
 		return msg;
 	}
 
-	event void SenseAndCache.clearDone(error_t err) {}
+	// Data pushing
+
+	event void SenseAndCache.eraseDone(error_t err) {
+		call Leds.set(7);
+	}
+	event void SenseAndCache.pushDataDone(error_t err) {}
+	event void SenseAndCache.flushTerminated() {}
+	event void SenseAndCache.dataArrived(uint16_t data) {}
+
 	event void SendNeighborsSerial.sendDone( message_t * msg, error_t result ) {}
 	event void SendHelloRequest.sendDone( message_t * msg, error_t result ) {}
 	event void SerialControl.startDone( error_t result ) {}

@@ -59,7 +59,11 @@ implementation {
 	TunnelMoteC.Get -> UserButtonC;
 	TunnelMoteC.Notify -> UserButtonC;
 
-	components new SenseAndCacheC(2);
+	components new SenseAndCacheC(uint16_t, sizeof(uint16_t));
 	TunnelMoteC.SenseAndCache -> SenseAndCacheC;
+
+	components new ConstantSensorC(uint16_t, 0xbeef) as Sensor;
+	SenseAndCacheC.Read -> Sensor.Read;
+
 
 }

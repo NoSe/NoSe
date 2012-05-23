@@ -5,13 +5,17 @@
 #include "message.h"
 #include <UserButton.h>
 
-module TunnelMoteC {
+module TunnelGatewayC {
 	uses {
 		interface Boot;
 		interface Leds;
 		interface Random;
 		interface SplitControl as RadioControl;
 		interface Timer<TMilli> as HelloTimer;
+		interface Timer<TMilli> as NeighborsDiscoveryTimer;
+		interface Timer<TMilli> as NeighborsCleanupTimer;
+		interface Timer<TMilli> as DownloadDataPauseTimer;
+
 		interface ActiveMessageAddress;
 		interface CC2420PacketBody;
 		interface CC2420Config;
@@ -29,6 +33,13 @@ module TunnelMoteC {
 		/* Button interface */
 		interface Get<button_state_t>;
 		interface Notify<button_state_t>;
+
+		// Sense and cache
+		interface SenseAndCache<uint16_t>;
+
+		// Time synchronization
+	        interface GlobalTime<TMilli>;
+	        interface TimeSyncInfo;
 
 	}
 }
@@ -76,15 +87,21 @@ implementation {
 		}
 		return count;
 	}
-	//------------------------
+
+	task void sendHelloRequest() {
+		call SendHelloRequest.send( AM_BROADCAST_ADDR, & radio_msg, 0 );
+	}
 
 	event void Boot.booted() {
 		state = STATE_IDLE;
-		clearNeighbors();
-	    	call Leds.set( 0 );
 	    	call Notify.enable();
 		call RadioControl.start();
 		call SerialControl.start();
+#ifdef IS_GATEWAY
+		clearNeighbors();
+		call NeighborsDiscoveryTimer.startPeriodic((uint32_t)( 1024 * NEIGHBORS_DISCOVERY_TIME_S ));
+		call NeighborsCleanupTimer.startPeriodic((uint32_t)( (uint32_t) 1024 * (uint32_t) NEIGHBORS_DISCOVERY_CLENUP_S ));
+#endif
 	}
 
 	task void sendHelloResponse() {
@@ -108,11 +125,8 @@ implementation {
 		call SendNeighborsSerial.send( AM_BROADCAST_ADDR, & uart_msg, sizeof(neighbors_msg_t) );
 	}
 
-	task void sendHelloRequest() {
-		call SendHelloRequest.send( AM_BROADCAST_ADDR, & radio_msg, 0 );
-	}
-
 	event message_t * ReceiveHelloRequest.receive( message_t * msg, void * payload, uint8_t len ) {
+#ifndef IS_GATEWAY
 		if ( state == STATE_IDLE ) {
 			call Leds.led0On();
 			state = STATE_HELLO;
@@ -120,13 +134,16 @@ implementation {
 			jitter = call Random.rand16() % ( 1024 * HELLO_JITTER_S );
 			call HelloTimer.startOneShot(jitter);
 		}
+#endif
 		return msg;
 	}
 
 	event message_t * ReceiveHelloResponse.receive( message_t * msg, void * payload, uint8_t len ) {
+#ifdef IS_GATEWAY
 		addNeighbor(( call CC2420PacketBody.getHeader( msg )) -> src);
 		call Leds.set(getNeighborsCount());
 		post sendNeighborsSerial();
+#endif
 		return msg;
 	}
     
@@ -143,26 +160,56 @@ implementation {
 
     	event void Notify.notify( button_state_t button_state ) {
         	if ( button_state == BUTTON_PRESSED ) {
-			post sendHelloRequest();
+			call SenseAndCache.erase();
         	} else if ( button_state == BUTTON_RELEASED ) {
 
             	}
         }
 
 	event message_t * ReceiveSerial.receive( message_t * msg, void * payload, uint8_t len ) {
+		/*
 		command_message = payload;
 		call Leds.set( 7 );
 		if ( command_message->type == 10 ) {
 			post sendHelloRequest();
 		}
+		*/
 		return msg;
 	}
+
+	// Clean the neighbors list
+	event void NeighborsCleanupTimer.fired() {
+		clearNeighbors();
+	}
+	
+	event void NeighborsDiscoveryTimer.fired() {
+		post sendHelloRequest();
+	}	
+
+	event void DownloadDataPauseTimer.fired() {
+	}
+
+	// Data pushing
+
+	event void SenseAndCache.eraseDone(error_t err) {
+		call Leds.set(7);
+	}
+
+	event void RadioControl.startDone( error_t result ) {
+		if ( result == SUCCESS ) {
+			post sendHelloRequest();
+		}
+	}
+
+	event void SenseAndCache.pushDataDone(error_t err) {}
+	event void SenseAndCache.flushTerminated() {}
+	event void SenseAndCache.dataArrived(uint16_t data) {}
 
 	event void SendNeighborsSerial.sendDone( message_t * msg, error_t result ) {}
 	event void SendHelloRequest.sendDone( message_t * msg, error_t result ) {}
 	event void SerialControl.startDone( error_t result ) {}
 	event void SerialControl.stopDone( error_t result ) {}
-	event void RadioControl.startDone( error_t result ) {}
+
 	event void RadioControl.stopDone( error_t result ) {}
    	event void CC2420Config.syncDone( error_t error ) {}
     	async event void ActiveMessageAddress.changed() {}

@@ -24,11 +24,21 @@ implementation {
 	components ActiveMessageC;
 	TunnelMoteC.RadioControl -> ActiveMessageC;
 
+	// Discovery
+	
 	components new AMReceiverC( AM_DISCOVERY_REQUEST ) as ReceiveHelloRequest;
 	TunnelMoteC.ReceiveHelloRequest -> ReceiveHelloRequest;
 
 	components new AMSenderC( AM_DISCOVERY_RESPONSE ) as SendHelloResponse;
 	TunnelMoteC.SendHelloResponse -> SendHelloResponse;
+
+	// Data request/response
+
+	components new AMReceiverC( AM_DATA_REQUEST ) as ReceiveDataRequest;
+	TunnelMoteC.ReceiveDataRequest -> ReceiveDataRequest;
+
+	components new AMSenderC( AM_DATA_RESPONSE ) as SendDataResponse;
+	TunnelMoteC.SendDataResponse -> SendDataResponse;
 
 	components ActiveMessageAddressC as Address;
 	TunnelMoteC.ActiveMessageAddress -> Address;
@@ -38,6 +48,9 @@ implementation {
 
 	components SenseAndCacheC;
 	TunnelMoteC.SenseAndCache -> SenseAndCacheC;
+
+	components new TimerMilliC() as SensingTimer;
+	TunnelMoteC.SensingTimer -> SensingTimer;
 
 	components new ConstantSensorC(uint16_t, 0xbeef) as Sensor;
 	SenseAndCacheC.Read -> Sensor.Read;

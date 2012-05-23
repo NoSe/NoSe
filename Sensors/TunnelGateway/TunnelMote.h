@@ -13,6 +13,9 @@
 // Neighbors list is cleared after 60s
 #define NEIGHBORS_DISCOVERY_CLENUP_S	60
 
+// Sensing interval
+#define SENSING_INTERVAL_S		15
+
 enum {
 	// 0x3E - 62 reserved for time sync protocol
 
@@ -31,7 +34,16 @@ typedef enum {
 	STATE_HELLO		= 1
 } state_t;
 
+typedef struct data_request_msg {
+	uint8_t retry;		// 0: confirm previouse packet,
+				// 1: force to send again previouse packet
+} data_request_msg_t;
+
 typedef struct data_response_msg {
+	uint16_t source;	// Sender node
+	uint16_t value;		// Sensed value
+	uint8_t is_valid;	// Global Time is valid (SUCCESS: yes)
+	uint32_t time;		// Global time of sensed value
 } data_response_msg_t;
 
 typedef struct command_msg {

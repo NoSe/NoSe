@@ -1,23 +1,25 @@
 
 #include "StorageVolumes.h"
 
-generic configuration SenseAndCacheC(typedef val_t @integer(), uint8_t log_entry_size) {
+configuration SenseAndCacheC {
 	uses {
-		interface Read<val_t>;
+		interface Read<uint16_t>;
+		interface GlobalTime<TMilli>;
 	}
 	provides {
-		interface SenseAndCache<val_t>;
+		interface SenseAndCache;
 	}
 }
 implementation {
 
-	components new SenseAndCacheP(val_t, log_entry_size);
+	// Main component
+	components SenseAndCacheP;
 	SenseAndCache = SenseAndCacheP.SenseAndCache;
 	Read = SenseAndCacheP.Read;
+	GlobalTime = SenseAndCacheP.GlobalTime;
 
 	// Flash storage
 	components new LogStorageC(VOLUME_LOGCHANNELS, TRUE);	
-	
 	SenseAndCacheP.LogRead -> LogStorageC;
 	SenseAndCacheP.LogWrite -> LogStorageC;
 		

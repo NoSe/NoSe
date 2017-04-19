@@ -79,7 +79,7 @@ class DataProvider(threading.Thread):
         self._stop = threading.Event()
 
     def close(self):
-        print "REQUEST to close DataProvider"
+        print("REQUEST to close DataProvider")
         self._stop.set()
     
     # Send length of packet and packet
@@ -96,7 +96,7 @@ class DataProvider(threading.Thread):
             num_packets = int(num_packets / 256)
             buffer = buffer + chr(v)
         buffer = buffer + chr(0)
-	self.sendPacket(buffer)
+        self.sendPacket(buffer)
             
     def run(self):
         
@@ -108,13 +108,13 @@ class DataProvider(threading.Thread):
                 logging.info('DataProvider:Starting server')
                 s = socket.socket(af, socktype, proto)
                 s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)        
-            except socket.error, msg:
+            except socket.error as msg:
                 s = None
                 continue
             try:
                 s.bind(sa)
                 s.listen(1)
-            except socket.error, msg:
+            except socket.error as msg:
                 s.close()
                 s = None
                 continue
@@ -346,12 +346,12 @@ class SQLPacketRecorder(threading.Thread):
         logging.info('SQLPacketRecorder:Prepare DB')
         self.cursor.execute('CREATE TABLE IF NOT EXISTS packets (id INTEGER PRIMARY KEY, description VARCHAR(50), data VARCHAR(200))')
 
-		self.cursor.execute('SELECT count(*) FROM packets')
+        self.cursor.execute('SELECT count(*) FROM packets')
         row = self.cursor.fetchone();
         if row:
-			logging.info('Packets in DB: ' + row[0])
-		else:
-			logging.info('Packets in DB: 0')
+            logging.info('Packets in DB: ' + row[0])
+        else:
+            logging.info('Packets in DB: 0')
         
         logging.info('SQLPacketRecorder:Start receiving packets')
         while not self._stop.isSet():
@@ -376,8 +376,8 @@ class SQLPacketRecorder(threading.Thread):
         self.connection.close();
 
 if '-h' in sys.argv:
-    print "Usage:", sys.argv[0], "serial@/dev/ttyUSB0:57600"
-    print "      ", sys.argv[0], "network@host:port"
+    print("Usage:", sys.argv[0], "serial@/dev/ttyUSB0:57600")
+    print("      ", sys.argv[0], "network@host:port")
     sys.exit()
 
 ############################################################

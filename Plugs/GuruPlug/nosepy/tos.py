@@ -34,8 +34,8 @@ import traceback
 
 try: 
     import serial
-except ImportError, e: 
-    print "Please install PySerial first."
+except ImportError as e:
+    print("Please install PySerial first.")
     sys.exit(1)
 
 __version__ = "$Id$"
@@ -72,14 +72,14 @@ def getSource(comm):
         try:
             return Serial(params[0], int(params[1]), flush=True, debug=debug)
         except:
-            print "ERROR: Unable to initialize a serial connection to", comm
+            print("ERROR: Unable to initialize a serial connection to", comm)
             raise Exception
     elif source[0] == 'network':
         try:
             return SerialMIB600(params[0], int(params[1]), debug=debug)
         except:
-            print "ERROR: Unable to initialize a network connection to", comm
-            print "ERROR:", traceback.format_exc()
+            print("ERROR: Unable to initialize a network connection to", comm)
+            print("ERROR:", traceback.format_exc())
             raise Exception
     raise Exception
 
@@ -135,7 +135,7 @@ class SerialMIB600:
         self._ts = None
         self._s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self._s.connect((host, port))
-        print "Connected"
+        print("Connected")
 
     def getByte(self):
         try:
@@ -258,7 +258,7 @@ class HDLC:
 
             #MN: to check
             if crc != packet_crc:
-                print "Warning: wrong CRC! %x != %x %s" % (crc, packet_crc, ["%2x" % i for i in packet])
+                print("Warning: wrong CRC! %x != %x %s" % (crc, packet_crc, ["%2x" % i for i in packet]))
             if not self._s._ts:
                 self._s._ts = ts
             self.log("Serial:_read: %.4f (%.4f) Recv: %s" % (ts, ts - self._s._ts, self._format(packet[1:-3])))
@@ -359,7 +359,7 @@ class HDLC:
 
     def log(self, s):
         if self._s.debug:
-            print s
+            print(s)
 
 class SimpleAM(object):
     def __init__(self, source, oobHook=None):
@@ -394,7 +394,7 @@ class SimpleAM(object):
                 if self.oobHook:
                     self.oobHook(ActiveMessage(NoAckDataFrame(f)))
                 else:
-                    print 'SimpleAM:write: skip', ack, f
+                    print('SimpleAM:write: skip', ack, f)
                 f = self._hdlc.read(self._source.ackTimeout)
                 if f == None:
                     #print "Ack Timeout!"
@@ -416,7 +416,7 @@ def printfHook(packet):
         s = "".join([chr(i) for i in packet.data]).strip('\0')
         lines = s.split('\n')
         for line in lines:
-            if line: print "PRINTF:", line
+            if line: print("PRINTF:", line)
         packet = None # No further processing for the printf packet
     return packet    
 
@@ -436,7 +436,7 @@ class AM(SimpleAM):
                     try:
                         s = getSource(os.environ['MOTECOM'])
                     except:
-                        print "ERROR: Please indicate a way to connect to the mote"
+                        print("ERROR: Please indicate a way to connect to the mote")
                         sys.exit(-1)
         if oobHook == None:
             oobHook = printfHook
